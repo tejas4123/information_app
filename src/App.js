@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { setLocation, setError, setLoading, clearData } from './redux/actions';
+import ZipCodeForm from './Components/ZipCodeForm';
+import LocationInfo from './Components/LocationInfo';
 
 function App() {
+  const [location , setLocation] = useState(null);
+  // const [error, setError] = useState(null);
+
+  const fetchLocationInfo = (data) => {
+    
+    setLocation(data);
+  };
+
+  const clearData = () => {
+    setLocation(null);
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Zip Code Information App</h1>
+      <ZipCodeForm onZipCodeSubmit={fetchLocationInfo}  />
+      <LocationInfo location={location}  onClear={clearData} />
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    location: state.app.location,
+    error: state.app.error,
+    loading: state.app.loading,
+  };
+};
+
+const mapDispatchToProps = {
+  setLocation,
+  setError,
+  setLoading,
+  clearData,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
